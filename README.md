@@ -1,7 +1,8 @@
 # JMDictEx
 
 JMDictEx is an Elixir library for fetching, filtering, and downloading JMDict (Japanese-Multilingual Dictionary) and related dictionary files from the jmdict-simplified GitHub repository.
-
+[![codecov](https://codecov.io/gh/iwatakeshi/jmdict_ex/graph/badge.svg?token=5XYXSI97PO)](https://codecov.io/gh/iwatakeshi/jmdict_ex)
+[![Elixir CI](https://github.com/iwatakeshi/jmdict_ex/actions/workflows/elixir.yml/badge.svg)](https://github.com/iwatakeshi/jmdict_ex/actions/workflows/elixir.yml)
 ## Features
 
 - Fetch the latest dictionary assets from the jmdict-simplified GitHub repository
