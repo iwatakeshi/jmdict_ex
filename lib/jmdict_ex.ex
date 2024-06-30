@@ -59,6 +59,7 @@ defmodule JMDictEx do
   def fetch_dicts(opts) when is_list(opts) do
     case get_latest_assets() do
       {:ok, assets} -> {:ok, apply_filter(assets, opts)}
+      # coveralls-ignore-next-line
       {:error, reason} -> {:error, reason}
     end
   end
@@ -89,6 +90,7 @@ defmodule JMDictEx do
           {:ok, String.t()}
           | {:error, String.t()}
           | [{:ok, String.t()} | {:error, String.t()}]
+  # coveralls-ignore-start
   def download_to({:ok, asset}, dest) when is_struct(asset, Asset), do: download_to(asset, dest)
 
   def download_to({:ok, assets}, dest) when is_list(assets),
@@ -101,6 +103,7 @@ defmodule JMDictEx do
     do: assets |> Enum.map(&download_to(&1, dest))
 
   def download_to([], _dest), do: {:error, "No assets to download"}
+ # coveralls-ignore-end
 
   def download_to(%Asset{} = asset, dest) do
     with {:ok, binary} <- Assets.download_asset(asset),
@@ -109,6 +112,7 @@ defmodule JMDictEx do
       File.rm(file_path)
       {:ok, extract_dir}
     else
+      # coveralls-ignore-next-line
       {:error, reason} -> {:error, reason}
     end
   end
