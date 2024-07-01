@@ -55,3 +55,26 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
+
+### JMdict and JMnedict
+
+The original XML files - **JMdict.xml**, **JMdict_e.xml**, and **JMnedict.xml** -
+are the property of the Electronic Dictionary Research and Development Group,
+and are used in conformance with the Group's [license][EDRDG-license].
+Project started in 1991 by Jim Breen.
+
+All derived files are distributed under the same license, as the original license requires it.
+
+### Kanjidic
+
+The original **kanjidic2.xml** file is released under
+[Creative Commons Attribution-ShareAlike License v4.0][CC-BY-SA-4].
+See the [Copyright and Permissions](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project#Copyright_and_Permissions)
+section on the Kanjidic wiki for details.
+
+All derived files are distributed under the same license, as the original license requires it.
+
+### RADKFILE/KRADFILE
+
+The RADKFILE and KRADFILE files are copyright and available under the [EDRDG Licence][EDRDG-license].
+The copyright of the RADKFILE2 and KRADFILE2 files is held by Jim Rose.
