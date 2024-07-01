@@ -64,7 +64,7 @@ which is the intellectual property of the Electronic Dictionary Research and Dev
 See [EDRDG License][EDRDG-license]All derived files are distributed under the same license, as the original license requires it.
 
 ### Kanjidic
-The Kanjidic data used in this project is derived from the [jmdict-simplified][jmdict-simplified] project, which converts the original XML to JSON. The original kanjidic2.xml file is released under the Creative Commons Attribution-ShareAlike License v4.0. See the Copyright and Permissions section on the Kanjidic wiki for details.
+The Kanjidic data used in this project is derived from the [jmdict-simplified][jmdict-simplified] project, which converts the original XML to JSON. The original kanjidic2.xml file is released under the [Creative Commons Attribution-ShareAlike License v4.0][CC-BY-SA-4]. See the Copyright and Permissions section on the Kanjidic wiki for details.
 
 ### RADKFILE/KRADFILE
 
