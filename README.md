@@ -56,25 +56,22 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the [MIT License](LICENSE.md).
 
-### JMdict and JMnedict
+### JMdict
 
-The original XML files - **JMdict.xml**, **JMdict_e.xml**, and **JMnedict.xml** -
-are the property of the Electronic Dictionary Research and Development Group,
-and are used in conformance with the Group's [license](https://www.edrdg.org/edrdg/licence.html).
-Project started in 1991 by Jim Breen.
-
-All derived files are distributed under the same license, as the original license requires it.
+The origin of **JMdict** in the form of a JSON file is the repository [jmdict-simplified][jmdict-simplified].
+In view of this, the said file is subject to the same license as its original source, namely **JMdict.xml**,
+which is the intellectual property of the Electronic Dictionary Research and Development Group. 
+See [EDRDG License][EDRDG-license]All derived files are distributed under the same license, as the original license requires it.
 
 ### Kanjidic
-
-The original **kanjidic2.xml** file is released under
-[Creative Commons Attribution-ShareAlike License v4.0][CC-BY-SA-4].
-See the [Copyright and Permissions](https://www.edrdg.org/wiki/index.php/KANJIDIC_Project#Copyright_and_Permissions)
-section on the Kanjidic wiki for details.
-
-All derived files are distributed under the same license, as the original license requires it.
+The Kanjidic data used in this project is derived from the [jmdict-simplified][https://github.com/scriptin/jmdict-simplified] project, which converts the original XML to JSON. The original kanjidic2.xml file is released under the Creative Commons Attribution-ShareAlike License v4.0. See the Copyright and Permissions section on the Kanjidic wiki for details.
 
 ### RADKFILE/KRADFILE
 
-The RADKFILE and KRADFILE files are copyright and available under the [EDRDG Licence](https://www.edrdg.org/edrdg/licence.html).
+The RADKFILE and KRADFILE files are copyright and available under the [EDRDG Licence][EDRDG-license].
 The copyright of the RADKFILE2 and KRADFILE2 files is held by Jim Rose.
+
+[jmdict-simplified]: https://github.com/scriptin/jmdict-simplified
+[EDRDG-license]: http://www.edrdg.org/edrdg/licence.html
+[Apache-2.0]: http://www.apache.org/licenses/LICENSE-2.0
+[CC-BY-SA-4]: http://creativecommons.org/licenses/by-sa/4.0
