@@ -60,7 +60,7 @@ This project is licensed under the [MIT License](LICENSE.md).
 
 The original XML files - **JMdict.xml**, **JMdict_e.xml**, and **JMnedict.xml** -
 are the property of the Electronic Dictionary Research and Development Group,
-and are used in conformance with the Group's [license][EDRDG-license].
+and are used in conformance with the Group's [license](https://www.edrdg.org/edrdg/licence.html).
 Project started in 1991 by Jim Breen.
 
 All derived files are distributed under the same license, as the original license requires it.
@@ -76,5 +76,5 @@ All derived files are distributed under the same license, as the original licens
 
 ### RADKFILE/KRADFILE
 
-The RADKFILE and KRADFILE files are copyright and available under the [EDRDG Licence][EDRDG-license].
+The RADKFILE and KRADFILE files are copyright and available under the [EDRDG Licence](https://www.edrdg.org/edrdg/licence.html).
 The copyright of the RADKFILE2 and KRADFILE2 files is held by Jim Rose.
