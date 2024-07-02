@@ -1,4 +1,5 @@
 defmodule JMDictEx.Utils.Cachex do
+  @dialyzer {:nowarn_function, wrap_fn: 1}
   @doc """
   Wraps a value for Cachex.fetch, handling various return types.
   """
