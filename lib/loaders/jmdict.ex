@@ -1,5 +1,7 @@
 defmodule JMDictEx.Loaders.JMDict do
+  require Logger
   alias JMDictEx.Utils.Downloader
+  import JMDictEx.Utils.Cachex, only: :functions
 
   @cache_ttl :timer.hours(24)
 
@@ -10,28 +12,13 @@ defmodule JMDictEx.Loaders.JMDict do
       IO.puts("Invalid language: #{inspect(lang)}")
       {:error, "Invalid language: #{inspect(lang)}"}
     else
-      case Cachex.fetch(
-             :jmdict_ex,
-             {:jmdict, :load, lang},
-             fn _key ->
-               case do_load(lang, format) do
-                 {:ok, dict} ->
-                   {:commit, dict}
-
-                 _ ->
-                   {:ignore, %{}}
-               end
-             end,
-             ttl: @cache_ttl
-           ) do
-        {:ok, dict} ->
-          {:ok, dict}
-        {:commit, dict} ->
-          {:ok, dict}
-
-        {:error, reason} ->
-          {:error, reason}
-      end
+      Cachex.fetch(
+        :jmdict_ex,
+        {:jmdict, :load, lang},
+        fn _ -> do_load(lang, format) |> unwrap(%{}) end,
+        ttl: @cache_ttl
+      )
+      |> unwrap()
     end
   end
 
@@ -47,7 +34,7 @@ defmodule JMDictEx.Loaders.JMDict do
   end
 
   defp do_load(lang, format) do
-    IO.puts("Downloading JMDict (#{lang})...")
+    Logger.info("Downloading JMDict (#{lang})...")
 
     with {:ok, assets} <- Downloader.fetch_dicts(source: :jmdict, lang: lang, format: format),
          {:ok, dir} <- Briefly.create(type: :directory),
