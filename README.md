@@ -41,7 +41,7 @@ JMDictEx.download_to(assets, "/path/to/destination")
 
 # Get available languages and source types
 languages = JMDictEx.available_languages()
-source_types = JMDictEx.available_source_types()
+source_types = JMDictEx.available_sources()
 ```
 
 ## Documentation
