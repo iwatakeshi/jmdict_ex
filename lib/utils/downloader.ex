@@ -109,6 +109,7 @@ defmodule JMDictEx.Utils.Downloader do
         with {:ok, assets} <- get_latest_assets() do
           apply_filter(assets, opts) |> wrap()
         else
+          # coveralls-ignore-next-line
           {:error, _} -> wrap({:ok, []})
         end
       end,

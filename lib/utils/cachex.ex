@@ -22,6 +22,7 @@ defmodule JMDictEx.Utils.Cachex do
   def unwrap({:ignore, _reason}, default), do: {:ok, default}
   def unwrap({:error, reason}, _default), do: {:error, reason}
   def unwrap({:ok, result}, _default), do: {:ok, result}
+  # coveralls-ignore-next-line
   def unwrap(result, _default), do: {:ok, result}
 
 

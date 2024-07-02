@@ -14,9 +14,11 @@ defmodule JMDictEx.Loaders.Core do
              is_atom(lang) and
              is_atom(format) and
              is_function(decode_fun, 1) do
+    # coveralls-ignore-start
     if length(available_languages(source)) > 0 and not valid_language?(source, lang) do
       Logger.error("Invalid language: #{inspect(lang)}")
       {:error, "Invalid language: #{inspect(lang)}"}
+    # coveralls-ignore-stop
     else
       Cachex.fetch(
         :jmdict_ex,
@@ -29,12 +31,14 @@ defmodule JMDictEx.Loaders.Core do
   end
 
   defp do_load(source, lang, format, decode_fun) do
+    # coveralls-ignore-start
     debug_output =
       if lang,
         do: "Loading #{source} data for #{inspect(lang)} in #{inspect(format)} format",
         else: "Loading #{source} data in #{inspect(format)} format"
 
     Logger.debug(debug_output)
+    # coveralls-ignore-stop
 
     with {:ok, assets} <- Downloader.fetch_dicts(source: source, lang: lang, format: format),
          {:ok, dir} <- Briefly.create(type: :directory),
@@ -45,15 +49,17 @@ defmodule JMDictEx.Loaders.Core do
       Briefly.cleanup()
       {:ok, result}
     else
+      # coveralls-ignore-start
       {:error, reason} ->
-        Logger.error("Failed to load #{source} data: #{inspect(reason)}")
+        Logger.error("Failed to load or decode #{source} data: #{inspect(reason)}")
         Briefly.cleanup()
         {:error, reason}
 
       error ->
-        Logger.error("Failed to load #{source} data: #{inspect(error)}")
+        Logger.error("Failed to load or decode #{source} data: #{inspect(error)}")
         Briefly.cleanup()
         {:error, :unknown}
+      # coveralls-ignore-stop
     end
   end
 

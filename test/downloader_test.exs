@@ -103,4 +103,11 @@ defmodule JMDictExTest do
     assert :jmdict in source_types
     assert :kanjidic2 in source_types
   end
+
+  test "available_formats/1 returns a list of available archive formats" do
+    {:ok, assets} = JMDictEx.Utils.Downloader.fetch_dicts(source: :jmdict, lang: :eng)
+    {:ok, formats} = JMDictEx.Utils.Downloader.available_formats(assets)
+    assert is_list(formats)
+    assert Enum.sort([:zip, :tgz]) == Enum.sort(formats)
+  end
 end
