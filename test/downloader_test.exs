@@ -20,14 +20,14 @@ defmodule JMDictExTest do
 
   describe "fetch_dicts/1" do
     test "fetches dictionaries with valid options" do
-      assert {:ok, assets} = JMDictEx.fetch_dicts(source: :jmdict, lang: :eng, archive_type: :zip)
+      assert {:ok, assets} = JMDictEx.Utils.Downloader.fetch_dicts(source: :jmdict, lang: :eng, archive_type: :zip)
       assert is_list(assets)
       assert Enum.all?(assets, &match?(%Asset{}, &1))
     end
 
     test "returns empty list with invalid options" do
       assert {:ok, []} =
-               JMDictEx.fetch_dicts(source: :invalid, lang: :invalid, archive_type: :invalid)
+               JMDictEx.Utils.Downloader.fetch_dicts(source: :invalid, lang: :invalid, archive_type: :invalid)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule JMDictExTest do
       test_dir = Path.join(output_dir, "single_asset_test")
       File.mkdir_p!(test_dir)
 
-      assert {:ok, extracted_path} = JMDictEx.download_to(valid_asset, test_dir)
+      assert {:ok, extracted_path} = JMDictEx.Utils.Downloader.download_to(valid_asset, test_dir)
 
       expected_file = "jmdict-eng-3.5.0.json"
       full_path = Path.join(extracted_path, expected_file)
@@ -59,7 +59,7 @@ defmodule JMDictExTest do
         browser_download_url: "https://example.com/nonexistent.zip"
       }
 
-      assert {:error, _reason} = JMDictEx.download_to(bad_asset, output_dir)
+      assert {:error, _reason} = JMDictEx.Utils.Downloader.download_to(bad_asset, output_dir)
     end
 
     test "handles multiple asset downloads", %{output_dir: output_dir} do
@@ -74,21 +74,21 @@ defmodule JMDictExTest do
         }
       ]
 
-      results = JMDictEx.download_to(assets, output_dir)
+      results = JMDictEx.Utils.Downloader.download_to(assets, output_dir)
       assert length(results) == 2
       assert Enum.all?(results, &match?({:ok, _}, &1))
     end
   end
 
   test "available_languages/0 returns a list of available languages" do
-    languages = JMDictEx.available_languages()
+    languages = JMDictEx.Utils.Downloader.available_languages()
     assert is_list(languages)
     assert :eng in languages
     assert :all in languages
   end
 
-  test "available_source_types/0 returns a list of available source types" do
-    source_types = JMDictEx.available_source_types()
+  test "available_sources/0 returns a list of available source types" do
+    source_types = JMDictEx.Utils.Downloader.available_sources()
     assert is_list(source_types)
     assert :jmdict in source_types
     assert :kanjidic2 in source_types
