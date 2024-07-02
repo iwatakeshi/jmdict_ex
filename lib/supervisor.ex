@@ -8,8 +8,9 @@ defmodule JMDictEx.Supervisor do
   @impl true
   def init(:ok) do
     children = [
-      {Cachex, name: :jmdict_ex},
+      {Cachex, name: :jmdict_ex}
     ]
+
     Supervisor.init(children, strategy: :one_for_one)
   end
 end
