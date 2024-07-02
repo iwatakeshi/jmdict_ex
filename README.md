@@ -23,25 +23,39 @@ def deps do
 end
 ```
 
+## Application Setup
+
+JMDictEx is an OTP application that automatically starts necessary processes for Cachex. To ensure it starts properly:
+
+1. Add `:jmdict_ex` to your list of applications in `mix.exs`:
+
+   ```elixir
+   def application do
+     [
+       extra_applications: [:logger, :jmdict_ex]
+     ]
+   end
+2. If you're using releases, make sure to include :jmdict_ex in your release configuration.
+3. Configure JMDictEx in your `config/config.exs` (or the appropriate config file for your environment):
+
+  ```elixir
+  import Config
+
+  config :jmdict_ex, cache_ttl: 86400  # Cache Time-To-Live in seconds (24 hours is the default)
+  ```
+
 ## Usage
 
 Here are some basic usage examples:
 
 ```elixir
-# Fetch all available assets
-{:ok, assets} = JMDictEx.fetch_dicts([])
-
-# Fetch JMDict assets for English
-{:ok, eng_assets} = JMDictEx.fetch_dicts(source: :jmdict, lang: :eng)
-
-# Download and extract an asset
-{:ok, assets} = JMDictEx.fetch_dicts(source: :jmdict, lang: :eng)
-JMDictEx.download_to(assets, "/path/to/destination")
-# -> /path/to/destination/jmdict-eng-3.5.0+20240625144517.json
-
-# Get available languages and source types
-languages = JMDictEx.available_languages()
-source_types = JMDictEx.available_source_types()
+alias JMDictEx.Loaders.{JMDict, JMNEDict, Kanjidic2, Radkfile, Kradfile}
+# Load and decode dictionary data
+{:ok, jmdict} = JMDict.load(:all)
+{:ok, jmnedict} = JMNEDict.load(:all)
+{:ok, kanjidic2} = Kanjidic2.load(:all)
+{:ok, radkfile} = Radkfile.load()
+{:ok, kradfile} = Kradfile.load()
 ```
 
 ## Documentation
