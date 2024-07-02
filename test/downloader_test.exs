@@ -20,14 +20,24 @@ defmodule JMDictExTest do
 
   describe "fetch_dicts/1" do
     test "fetches dictionaries with valid options" do
-      assert {:ok, assets} = JMDictEx.Utils.Downloader.fetch_dicts(source: :jmdict, lang: :eng, archive_type: :zip)
+      assert {:ok, assets} =
+               JMDictEx.Utils.Downloader.fetch_dicts(
+                 source: :jmdict,
+                 lang: :eng,
+                 archive_type: :zip
+               )
+
       assert is_list(assets)
       assert Enum.all?(assets, &match?(%Asset{}, &1))
     end
 
     test "returns empty list with invalid options" do
       assert {:ok, []} =
-               JMDictEx.Utils.Downloader.fetch_dicts(source: :invalid, lang: :invalid, archive_type: :invalid)
+               JMDictEx.Utils.Downloader.fetch_dicts(
+                 source: :invalid,
+                 lang: :invalid,
+                 archive_type: :invalid
+               )
     end
   end
 
