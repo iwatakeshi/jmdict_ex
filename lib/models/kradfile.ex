@@ -1,4 +1,4 @@
-defmodule Kradfile do
+defmodule JMDictEx.Models.Kradfile do
   @derive [Poison.Encoder]
   @type t :: %__MODULE__{
           kanji: %{String.t() => KanjiComponents.t()},

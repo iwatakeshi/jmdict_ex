@@ -1,5 +1,4 @@
 defmodule JMDictEx.Utils.Cachex do
-  @dialyzer {:nowarn_function, wrap_fn: 1}
   @doc """
   Wraps a value for Cachex.fetch, handling various return types.
   """
@@ -25,12 +24,6 @@ defmodule JMDictEx.Utils.Cachex do
   def unwrap({:ok, result}, _default), do: {:ok, result}
   def unwrap(result, _default), do: {:ok, result}
 
-  @doc """
-  Wraps a function result for Cachex.fetch.
-  """
-  def wrap_fn(fun) when is_function(fun, 0) do
-    fun |> fun.() |> wrap()
-  end
 
   @doc """
   Unwraps a Cachex.fetch result and applies a function to the value if it's a {:ok, result}.

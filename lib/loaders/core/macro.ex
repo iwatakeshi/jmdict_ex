@@ -1,3 +1,4 @@
+# coveralls-ignore-start
 defmodule JMDictEx.Loaders.Macro do
   @doc """
   A macro that defines loader functions based on the provided options.
@@ -71,3 +72,4 @@ defmodule JMDictEx.Loaders.Macro do
     end
   end
 end
+# coveralls-ignore-stop

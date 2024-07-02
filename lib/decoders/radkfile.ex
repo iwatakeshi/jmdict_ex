@@ -24,5 +24,5 @@ defmodule JMDictEx.Decoders.Radkfile do
     end)
     |> Enum.into(%{})
   end
-  defp transform_radicals(_), do: %{}
+  # defp transform_radicals(_), do: %{}
 end

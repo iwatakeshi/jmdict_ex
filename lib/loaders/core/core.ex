@@ -4,8 +4,8 @@ defmodule JMDictEx.Loaders.Core do
   alias JMDictEx.Utils.Downloader
   import JMDictEx.Utils.Cachex, only: :functions
 
-  @dialyzer {:no_return, do_load: 4}
-  @dialyzer {:nowarn_function, function_with_anon: 0}
+  # @dialyzer {:no_return, do_load: 4}
+  # @dialyzer {:nowarn_function, function_with_anon: 0}
 
   @ttl Application.compile_env(:jmdict_ex, :cache_ttl, 86400)
 
@@ -24,7 +24,7 @@ defmodule JMDictEx.Loaders.Core do
         fn _ -> do_load(source, lang, format, decode_fun) |> wrap() end,
         ttl: @ttl
       )
-      |> unwrap(%{})
+      |> unwrap()
     end
   end
 
@@ -64,7 +64,8 @@ defmodule JMDictEx.Loaders.Core do
           assets
           |> Downloader.available_languages()
 
-        case result do
+          case result do
+          # coveralls-ignore-next-line
           [:unknown] -> []
           _ -> result
         end

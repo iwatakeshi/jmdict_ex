@@ -1,6 +1,6 @@
 defmodule JMDictEx.Decoders.Kradfile do
-  alias Kradfile
-  alias Kradfile.KanjiComponents
+  alias JMDictEx.Models.Kradfile
+  alias JMDictEx.Models.Kradfile.KanjiComponents
 
   def decode(json) do
     case Poison.decode(json, as: %Kradfile{}) do
@@ -18,6 +18,6 @@ defmodule JMDictEx.Decoders.Kradfile do
     end)
     |> Enum.into(%{})
   end
-  defp transform_kanji_components(_), do: %{}
+  # defp transform_kanji_components(_), do: %{}
 
 end

@@ -30,6 +30,9 @@ defmodule JMDictEx.MixProject do
         source_url: @source_url,
         source_ref: "v#{@version}",
         extras: ["README.md", "LICENSE", "CHANGELOG.md"]
+      ],
+      coveralls: [
+        exclude_modules: [Cachex],
       ]
     ]
   end
