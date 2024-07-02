@@ -37,13 +37,16 @@ defmodule JMDictEx.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :runtime_tools, :observer],
+      mod: {JMDictEx, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:briefly, "~> 0.5.1"},
+      {:cachex, "~> 3.6"},
       {:poison, "~> 6.0"},
       {:httpoison, "~> 2.2"},
       {:req, "~> 0.5.1"},
