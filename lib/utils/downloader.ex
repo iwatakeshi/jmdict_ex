@@ -15,6 +15,8 @@ defmodule JMDictEx.Utils.Downloader do
   alias JMDictEx.Utils.FileHandler
   alias JMDictEx.Utils.ArchiveExtractor
 
+  import JMDictEx.Utils.Cachex, only: :functions
+
   @cache_name :jmdict_ex
   # Cache for 24 hours
   @cache_ttl :timer.hours(24)
@@ -44,25 +46,19 @@ defmodule JMDictEx.Utils.Downloader do
   def available_languages(assets) when is_list(assets) do
     cache_key = {:download_available_languages, assets}
 
-    result = Cachex.fetch(
+    Cachex.fetch(
       @cache_name,
       cache_key,
       fn ->
-        result =
-          assets
-          |> Enum.map(&infer_lang(&1.name))
-          |> Enum.uniq()
-
-        {:commit, result}
+        assets
+        |> Enum.map(&infer_lang(&1.name))
+        |> Enum.uniq()
+        |> wrap()
       end,
       ttl: @cache_ttl
     )
-
-    case result do
-      {:ok, langs} -> langs
-      {:commit, langs} -> langs
-      _ -> []
-    end
+    |> unwrap([])
+    |> elem(1)
   end
 
   @doc """
@@ -73,29 +69,18 @@ defmodule JMDictEx.Utils.Downloader do
   def available_formats(assets) when is_list(assets) do
     cache_key = {:download_available_formats, assets}
 
-    result =
-      Cachex.fetch(
-        @cache_name,
-        cache_key,
-        fn ->
-          result =
-            assets
-            |> Enum.map(&infer_archive_format(&1.browser_download_url))
-            |> Enum.uniq()
-
-          case result do
-            [:tgz, :zip] -> {:commit, result}
-            _ -> {:ignore, []}
-          end
-        end,
-        ttl: @cache_ttl
-      )
-
-    case result do
-      {:ok, formats} -> formats
-      {:commit, formats} -> formats
-      _ -> []
-    end
+    Cachex.fetch(
+      @cache_name,
+      cache_key,
+      fn ->
+        assets
+        |> Enum.map(&infer_archive_format(&1.browser_download_url))
+        |> Enum.uniq()
+        |> wrap()
+      end,
+      ttl: @cache_ttl
+    )
+    |> unwrap()
   end
 
   @doc """
@@ -117,29 +102,19 @@ defmodule JMDictEx.Utils.Downloader do
   def fetch_dicts(opts) when is_list(opts) do
     cache_key = {:download_fetch_dicts, opts}
 
-    result =
-      Cachex.fetch(
-        @cache_name,
-        cache_key,
-        fn ->
-          case get_latest_assets() do
-            {:ok, assets} -> {:commit, apply_filter(assets, opts)}
-            {:error, reason} -> {:ignore, reason}
-          end
-        end,
-        ttl: @cache_ttl
-      )
-
-    case result do
-      {:ok, assets} ->
-        {:ok, assets}
-
-      {:commit, assets} ->
-        {:ok, assets}
-
-      _ ->
-        {:ok, []}
-    end
+    Cachex.fetch(
+      @cache_name,
+      cache_key,
+      fn ->
+        with {:ok, assets} <- get_latest_assets() do
+          apply_filter(assets, opts) |> wrap()
+        else
+          {:error, _} -> wrap({:ok, []})
+        end
+      end,
+      ttl: @cache_ttl
+    )
+    |> unwrap()
   end
 
   @doc """
@@ -178,8 +153,15 @@ defmodule JMDictEx.Utils.Downloader do
   def download_to({:error, reason}, _dest), do: {:error, reason}
   def download_to([%Asset{} = asset], dest), do: download_to(asset, dest)
 
-  def download_to(assets, dest) when is_list(assets) and is_binary(dest),
-    do: assets |> Enum.map(&download_to(&1, dest))
+  def download_to(assets, dest) when is_list(assets) and is_binary(dest) do
+    assets
+    |> Task.async_stream(
+      fn asset -> download_to(asset, dest) end,
+      max_concurrency: 5,
+      timeout: :infinity
+    )
+    |> Enum.map(fn {:ok, result} -> result end)
+  end
 
   def download_to([], _dest), do: {:error, "No assets to download"}
   # coveralls-ignore-end
@@ -187,36 +169,34 @@ defmodule JMDictEx.Utils.Downloader do
   def download_to(%Asset{} = asset, dest) do
     cache_key = {:download_download_to, asset, dest}
 
-    result =
-      Cachex.fetch(
-        @cache_name,
-        cache_key,
-        fn ->
-          with {:ok, binary} <- Assets.download_asset(asset),
-               {:ok, file_path} <- FileHandler.save_binary(binary, temp_file_path(asset.name)),
-               {:ok, extract_dir} <- ArchiveExtractor.extract(file_path, dest) do
-            File.rm(file_path)
-            {:commit, extract_dir}
-          else
-            {:error, reason} -> {:ignore, reason}
-          end
-        end,
-        ttl: @cache_ttl
-      )
+    Cachex.fetch(
+      @cache_name,
+      cache_key,
+      fn ->
+        case Assets.download_asset(asset) do
+          {:ok, binary} ->
+            with {:ok, file_path} <- FileHandler.save_binary(binary, temp_file_path(asset.name)),
+                 {:ok, extract_dir} <- ArchiveExtractor.extract(file_path, dest) do
+              File.rm(file_path)
+              wrap({:ok, extract_dir})
+            else
+              {:error, reason} -> wrap({:error, reason})
+            end
 
-    case result do
-      {:ok, path} -> {:ok, path}
-      {:commit, path} -> {:ok, path}
-      {:error, reason} -> {:error, reason}
-      {:ignore, reason} -> {:error, reason}
-    end
+          {:error, reason} ->
+            wrap({:error, reason})
+        end
+      end,
+      ttl: @cache_ttl
+    )
+    |> unwrap()
   end
 
   # Private functions
 
   @doc false
   @spec apply_filter([Asset.t()], keyword()) :: [Asset.t()]
-  defp apply_filter(assets, opts) do
+  defp apply_filter(assets, opts) when is_list(assets) do
     assets
     |> filter_by_source(opts[:source])
     |> filter_by_language(opts[:lang])
@@ -307,27 +287,16 @@ defmodule JMDictEx.Utils.Downloader do
   defp get_latest_assets do
     cache_key = :get_latest_assets
 
-    result =
-      Cachex.fetch(
-        @cache_name,
-        cache_key,
-        fn ->
-          result = Assets.get_latest_assets("prismify-co/jmdict-simplified")
-
-          case result do
-            {:ok, assets} -> {:commit, assets}
-            {:error, reason} -> {:ignore, reason}
-          end
-        end,
-        ttl: @cache_ttl
-      )
-
-    case result do
-      {:ok, assets} -> {:ok, assets}
-      {:commit, assets} -> {:ok, assets}
-      {:error, reason} -> {:error, reason}
-      {:ignore, reason} -> {:error, reason}
-    end
+    Cachex.fetch(
+      @cache_name,
+      cache_key,
+      fn ->
+        Assets.get_latest_assets("prismify-co/jmdict-simplified")
+        |> wrap()
+      end,
+      ttl: @cache_ttl
+    )
+    |> unwrap()
   end
 
   @doc false
